@@ -4,7 +4,6 @@ import pexpect
 from collections import defaultdict
 import re
 
-TEXT_DEC_PATTERN = r"\[Text=(\w+) CharacterOffsetBegin=\d+ CharacterOffsetEnd=\d+ PartOfSpeech=(\w+)\]"
 
 def parse_parser_results(response_byte):
     # """ 
@@ -25,7 +24,7 @@ def parse_parser_results(response_byte):
     # > root(ROOT-0, love-2)
     # > nsubj(love-2, i-1)
     # > dobj(love-2, you-3)
-    result = {"parsetree":""}
+    result = {}
     response = response_byte.decode('utf-8').strip().split('\n')
     raw_sentence = response[2]
     length = len(raw_sentence.split(' '))
@@ -84,11 +83,3 @@ nlp = StanfordCoreNLP()
 def parse(text):
     result = nlp.parse(text)
     return result
-
-
-@dispatcher.add_method
-def simple_add(first=0, **kwargs):
-    return first + kwargs["second"]
-
-
-dispatcher['subtract'] = lambda a, b: a - b
