@@ -25,10 +25,11 @@ def parse_parser_results(response_byte):
     # > nsubj(love-2, i-1)
     # > dobj(love-2, you-3)
     result = {}
-    response = response_byte.decode('utf-8').strip().split('\n')
-    raw_sentence = response[2]
-    length = len(raw_sentence.split(' '))
-    parsetree_str = " ".join([node.strip() for node in response[3+length:-length-1]])
+    response = response_byte.decode('utf-8').strip()
+    PATTERN = "\(ROOT\n[\w\W]+\)\n\n"
+    parsertree = re.search(PATTERN, response).group(0)
+    parsertree = re.sub(" +", " ", parsertree)
+    parsertree = parsertree.replace("\n", "")
     result["parsetree"] = parsetree_str
 
     return result
