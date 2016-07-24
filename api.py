@@ -62,6 +62,11 @@ class StanfordCoreNLP(object):
         It returns a Python data-structure, while the parse()
         function returns a JSON object
         """
+        while True:
+            try:
+                self.corenlp.read_nonblocking (4000, 0.3)
+            except pexpect.TIMEOUT:
+                break
         self.corenlp.sendline(text)
         self.corenlp.expect("NLP>")
         # bytes to utf-8
