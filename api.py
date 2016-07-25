@@ -26,11 +26,12 @@ def parse_parser_results(response_byte):
     # > dobj(love-2, you-3)
     result = {}
     response = response_byte.decode('utf-8').strip()
+    response = response.replace('\r\n', '\n')
     PATTERN = "\(ROOT\n[\w\W]+\)\n\n"
     parsertree = re.search(PATTERN, response).group(0)
     parsertree = re.sub(" +", " ", parsertree)
     parsertree = parsertree.replace("\n", "")
-    result["parsetree"] = parsetree_str
+    result["parsetree"] = parsertree
 
     return result
 
@@ -48,10 +49,10 @@ class StanfordCoreNLP(object):
 
         java_path = "/usr/lib/jvm/java-1.8.0-sun-1.8.0.91/bin/java"
         classname = "edu.stanford.nlp.pipeline.StanfordCoreNLP"
-        annotators = "tokenize,ssplit,parse"
+        prop_file = "custom.properties"
         
         # spawn the server
-        start_corenlp = '{java_path} -cp "*" -Xmx2g {classname} -annotators {annotators}'.format(java_path=java_path, classname=classname, annotators=annotators)
+        start_corenlp = '{java_path} -cp "*" -Xmx2g {classname} -props {propsfile}'.format(java_path=java_path, classname=classname, propsfile=prop_file)
         print("initiating NLP:", start_corenlp)
         self.corenlp = pexpect.spawn(start_corenlp)
         self.corenlp.expect("NLP>")
